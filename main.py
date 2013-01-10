@@ -1,6 +1,8 @@
 import sys
 from PySide.QtGui import *
 from PySide.QtCore import *
+from wordMethods.sounds import Rhymer
+from wordMethods.sounds import SyllableCounter
 
 class Main(QMainWindow):
 	def __init__(self):
