@@ -2,7 +2,6 @@ import nltk
 import re
 
 class Rhymer():
-	#Rhymer deals with words that rhyme.  Obviously.
 
 	def __init__(self):
 		self.pronunciationDict = nltk.corpus.cmudict.dict()
@@ -39,8 +38,21 @@ class SyllableCounter():
 	
 	def __init__(self):
 		self.pronunciationDict = nltk.corpus.cmudict.dict()
-
+	
+	def getLineCounts(self,words):
+		#returns cumulative syllable counts of each line
+		lines = words.split("\n")
+		lineCounts = []
+		
+		for line in lines:
+			count = 0
+			for word in line.split(" "):
+				count+=self.syllableCount(word)
+			lineCounts.append(count)
+		return lineCounts
+		
 	def syllableCount(self,word):
+		#returns syllable count of a single word
 		count = 0
 		word = word.lower()
 		
@@ -48,5 +60,4 @@ class SyllableCounter():
 			if syllable[-1].isdigit():
 				count+=1 
 		return count
-
 
