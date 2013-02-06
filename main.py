@@ -1,7 +1,7 @@
 import sys
 from PySide.QtGui import *
 from PySide.QtCore import *
-import wordMethods.haiku
+from wordMethods.haiku import *
 
 class Main(QMainWindow):
 	def __init__(self):
@@ -28,6 +28,12 @@ class Main(QMainWindow):
 		fileMenu.addAction(openAction)
 		fileMenu.addAction(exitAction)
 	
+		editMenu = menubar.addMenu('&Edit')
+		validHaikuAction = QAction('Validate Haiku',self)
+		validHaikuAction.triggered.connect(self.haikuValidate)
+		
+		editMenu.addAction(validHaikuAction)
+		
 	def openFile(self):
 		dialog = QFileDialog(self)
 		dialog.setFileMode(QFileDialog.AnyFile)
@@ -42,6 +48,12 @@ class Main(QMainWindow):
 		for line in someFile:
 			cWidget.textEdit.append(line)
 		
+	def haikuValidate(self):
+		cWidget = self.centralWidget()
+		#print isHaiku(cWidget.textEdit.toPlainText())
+		text = cWidget.textEdit.toPlainText()
+		print isHaiku(text)
+	
 class MainContent(QWidget):
     
 	def __init__(self):
@@ -55,12 +67,15 @@ class MainContent(QWidget):
 		self.textLabel = QLabel("Data:")
 		self.textEdit = QTextEdit()
 		self.comboBox = QComboBox()
+		
 		self.comboBox.addItem("Haiku")
 		self.comboBox.addItem("Limerick")
+		
 
 		grid.addWidget(self.textLabel,0,0)
 		grid.addWidget(self.textEdit,1,0)
 		grid.addWidget(self.comboBox,0,1)
+
 def main():
     	app = QApplication(sys.argv)
     	main = Main()

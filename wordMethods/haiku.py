@@ -5,6 +5,9 @@ def isHaiku(text):
 	counts = sc.getLineCounts(text)
 	expectedCounts = [5,7,5]
 	
+	if not counts:
+		return False
+
 	if len(counts) != 3:
 		return false
 

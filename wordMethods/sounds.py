@@ -43,11 +43,13 @@ class SyllableCounter():
 		#returns cumulative syllable counts of each line
 		lines = words.split("\n")
 		lineCounts = []
-		
+			
 		for line in lines:
 			count = 0
 			for word in line.split(" "):
-				count+=self.syllableCount(word)
+				if word.lower() not in self.pronunciationDict:
+					return False
+				count+=self.syllableCount(word.lower())
 			lineCounts.append(count)
 		return lineCounts
 		
