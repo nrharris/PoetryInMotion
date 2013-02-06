@@ -1,8 +1,7 @@
 import sys
 from PySide.QtGui import *
 from PySide.QtCore import *
-from wordMethods.sounds import Rhymer
-from wordMethods.sounds import SyllableCounter
+import wordMethods.haiku
 
 class Main(QMainWindow):
 	def __init__(self):
@@ -53,12 +52,15 @@ class MainContent(QWidget):
 		grid = QGridLayout()
 		self.setLayout(grid)   
         	
-		self.textLabel = QLabel("Data")
+		self.textLabel = QLabel("Data:")
 		self.textEdit = QTextEdit()
-		
-		grid.addWidget(self.textLabel)
-		grid.addWidget(self.textEdit)
-		
+		self.comboBox = QComboBox()
+		self.comboBox.addItem("Haiku")
+		self.comboBox.addItem("Limerick")
+
+		grid.addWidget(self.textLabel,0,0)
+		grid.addWidget(self.textEdit,1,0)
+		grid.addWidget(self.comboBox,0,1)
 def main():
     	app = QApplication(sys.argv)
     	main = Main()
