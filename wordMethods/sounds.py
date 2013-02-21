@@ -57,7 +57,10 @@ class SyllableCounter():
 		#returns syllable count of a single word
 		count = 0
 		word = word.lower()
-		
+	
+		if word not in self.pronunciationDict:
+			return 0
+	
 		for syllable in self.pronunciationDict[word][0]:
 			if syllable[-1].isdigit():
 				count+=1 
