@@ -29,7 +29,7 @@ def createNaiveHaiku():
 		count = 0
 		words = line.split("\t")
 		
-		for i in range(1,6):
+		for i in xrange(1,6):
 			count += sc.syllableCount(words[i])
 		
 		if count == 5:

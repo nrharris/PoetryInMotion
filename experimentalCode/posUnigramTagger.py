@@ -12,7 +12,7 @@ fileRange = 5
 for f in fileList:
 	for line in f:
 		words = line.split("\t")
-		for i in range(1,fileRange):
+		for i in xrange(1,fileRange):
 			if not c.get(words[i].lower()):
 				c[words[i].lower()] = [words[i+fileRange].strip('\n\r\t')]
 			else:

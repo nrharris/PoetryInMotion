@@ -5,7 +5,7 @@ posFrequencies = {}
 for line in f:
 	tokens = line.split("\t")
 	
-	for i in range(6,10):
+	for i in xrange(6,10):
 		tokens[i] = tokens[i].strip("\t\r\n")
 		tokens[i+1] = tokens[i+1].strip("\t\r\n")
 
