@@ -43,5 +43,6 @@ def printPartsOfSpeech(text,posFrequencies):
 				freq = percent * 100
 
 		print word + " " + tempWord + " "  + str(freq)
-			 		
+
+testString = "What string would you like me to test"			 		
 printPartsOfSpeech(testString,posFrequencies)
