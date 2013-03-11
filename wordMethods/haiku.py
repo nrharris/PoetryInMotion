@@ -11,7 +11,7 @@ def isHaiku(text):
 		return False
 
 	if len(counts) != 3:
-		return false
+		return False
 
 	for i in xrange(len(expectedCounts)):
 		if counts[i] != expectedCounts[i]:
