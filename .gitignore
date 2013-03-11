@@ -1,2 +1,3 @@
 *.pyc
-experimentalCode/ngrams/*
+*.db
+*.txt

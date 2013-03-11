@@ -19,7 +19,7 @@ def isHaiku(text):
 	return True	
 
 def createNaiveHaiku():
-	f = open("../experimentalCode/ngrams/5grams.txt","r")
+	f = open("experimentalCode/ngrams/5grams.txt","r")
 	sc = SyllableCounter()	
 	
 	fiveCounts = []
