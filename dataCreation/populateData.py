@@ -29,7 +29,9 @@ class DatabaseInit:
 		
 		segmentList = {}
 		
-		count = 0
+		fiveCount = 0
+		sevenCount = 0
+
 		for i in xrange(len(self.fileList)):
 			f = open(self.fileList[i])
 			for line in f:
@@ -43,13 +45,12 @@ class DatabaseInit:
 				syllableCounts = self.syllableCounter.getLineCounts(culledLine)
 				
 				if syllableCounts and syllableCounts[0] == 5:
-					count+=1
-					self.cursor.execute("INSERT into FiveSyllables VALUES (?,?)",(count,culledLine))
+					fiveCount+=1
+					self.cursor.execute("INSERT into FiveSyllables VALUES (?,?)",(fiveCount,culledLine))
 
 				if syllableCounts and syllableCounts[0] == 7:
-					count+=1
-					self.cursor.execute("INSERT into SevenSyllables VALUES (?,?)",(count,culledLine))
+					sevenCount+=1
+					self.cursor.execute("INSERT into SevenSyllables VALUES (?,?)",(sevenCount,culledLine))
 			
 			self.connection.commit()
 			f.close()		
-		print count

@@ -1,5 +1,6 @@
 from sounds import SyllableCounter
 from random import randint
+import sqlite3
 
 def isHaiku(text):
 	sc = SyllableCounter()
@@ -19,27 +20,21 @@ def isHaiku(text):
 	return True	
 
 def createNaiveHaiku():
-	f = open("experimentalCode/ngrams/5grams.txt","r")
-	sc = SyllableCounter()	
+	connection = sqlite3.connect('data/haiku.db')
+	cursor = connection.cursor()
+	cursor.execute("select count(*) from FiveSyllables")
+	numFiveRecords = cursor.fetchone()[0]
+	cursor.execute("select count(*) from SevenSyllables")
+	numSevenRecords = cursor.fetchone()[0]
+
+	firstIndex = int(randint(1,numFiveRecords))
+	secondIndex = int(randint(1,numSevenRecords))
+	thirdIndex = int(randint(1,numFiveRecords))
 	
-	fiveCounts = []
-	sevenCounts = []
-
-	for line in f:
-		count = 0
-		words = line.split("\t")
+	cursor.execute("select segment from FiveSyllables where id = ?",(firstIndex,))
+	print cursor.fetchone()[0]
+	cursor.execute("select segment from SevenSyllables where id = ?",(secondIndex,))
+	print cursor.fetchone()[0]
+	cursor.execute("select segment from FiveSyllables where id = ?",(thirdIndex,))
+	print cursor.fetchone()[0]
 		
-		for i in xrange(1,6):
-			count += sc.syllableCount(words[i])
-		
-		if count == 5:
-			fiveCounts.append(" ".join(words[1:6]))
-
-		if count == 7:
-			sevenCounts.append(" ".join(words[1:6]))	
-		
-	print fiveCounts[randint(0,len(fiveCounts)-1)]
-	print sevenCounts[randint(0,len(sevenCounts)-1)]
-	print fiveCounts[randint(0,len(fiveCounts)-1)]
-
-createNaiveHaiku()
