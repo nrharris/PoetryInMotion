@@ -14,43 +14,138 @@ class DatabaseInit:
 				path+"/3grams.txt",
 				path+"/4grams.txt",
 				path+"/5grams.txt"]
-		
-	def initialize(self):
-		self.SyllableTablesInit()
 
-	def SyllableTablesInit(self):
+		self.fiveCount = 0
+		self.sevenCount = 0
+		self.segmentList = {}
+		self.posList = {}
+		#self.posSize = 0
+	
+	def initialize(self):
+		self.TablesInit()
+
+	def TablesInit(self):
 		self.cursor.execute('''CREATE TABLE FiveSyllables
 					(id integer primary key, segment text)''')
 		
 		self.cursor.execute('''CREATE TABLE SevenSyllables
 					(id integer primary key, segment text)''')
 		
-		#f = open("data/ngrams/5grams.txt")
 		
-		segmentList = {}
-		
-		fiveCount = 0
-		sevenCount = 0
+		self.cursor.execute('''CREATE TABLE PosBigrams
+					(id integer primary key, firstPOS text, secondPOS text, frequency float)''')
 
 		for i in xrange(len(self.fileList)):
 			f = open(self.fileList[i])
 			for line in f:
-				culledLine = " ".join([word.strip("\r\n") for word in line.split("\t")[1:(i+3)]])
-				
-				if culledLine.lower() not in segmentList:
-					segmentList[culledLine.lower()] = 0
-				else:
-					continue
-					
-				syllableCounts = self.syllableCounter.getLineCounts(culledLine)
-				
-				if syllableCounts and syllableCounts[0] == 5:
-					fiveCount+=1
-					self.cursor.execute("INSERT into FiveSyllables VALUES (?,?)",(fiveCount,culledLine))
+				self.SyllableTablesInit(line,i)
 
-				if syllableCounts and syllableCounts[0] == 7:
-					sevenCount+=1
-					self.cursor.execute("INSERT into SevenSyllables VALUES (?,?)",(sevenCount,culledLine))
+				if i == 3:
+					self.BuildPosTable(line,i)
 			
 			self.connection.commit()
-			f.close()		
+			f.close()
+		
+		self.PosTablesInit()
+
+		
+	def SyllableTablesInit(self,line,fileNumber):
+		#populates data in FiveSyllables Table and SevenSyllables Table
+
+		culledLine = " ".join([word.strip("\r\n") for word in line.split("\t")[1:(fileNumber+3)]])
+				
+		if culledLine.lower() not in self.segmentList:
+			self.segmentList[culledLine.lower()] = 0
+		else:
+			return
+					
+		syllableCounts = self.syllableCounter.getLineCounts(culledLine)
+				
+		if syllableCounts and syllableCounts[0] == 5:
+			self.fiveCount+=1
+			self.cursor.execute("INSERT into FiveSyllables VALUES (?,?)",(self.fiveCount,culledLine))
+
+		if syllableCounts and syllableCounts[0] == 7:
+			self.sevenCount+=1
+			self.cursor.execute("INSERT into SevenSyllables VALUES (?,?)",(self.sevenCount,culledLine))
+			
+		
+	def BuildPosTable(self,line,fileNumber):
+		splitLine = line.split("\t")
+		count = int(splitLine[0])
+		partsOfSpeech = [word.strip("\t\r\n") for word in splitLine[fileNumber+3:]] 	
+		
+		for i in range(len(partsOfSpeech)-1):
+			pos = partsOfSpeech[i].strip("\t\r\n ")
+			nextPos = partsOfSpeech[i+1].strip("\t\r\n ")
+
+			if pos not in self.posList:
+				self.posList[pos] = {}
+				self.posList[pos][nextPos] = count
+			else:
+				if nextPos not in self.posList[pos]:
+					self.posList[pos][nextPos] = count
+				else:
+					self.posList[pos][nextPos]+= count
+			
+			if "totSize" not in self.posList[pos]:
+				self.posList[pos]["totSize"] = count
+			else:
+				self.posList[pos]["totSize"] += count
+	
+		#self.posSize+=count	
+				
+	def PosTablesInit(self):	
+		newPosList = {}
+		
+		for key,partsOfSpeech in self.posList.items():
+			newPosList[key] = {}
+
+			for pos,value in partsOfSpeech.items():
+				if pos!="totSize":
+					freq = (value/(self.posList[key]["totSize"]+0.0))
+					
+					if freq * 100 < 1:
+						freq = .01
+					else:
+						freq = float("{0:.2f}".format(freq))
+
+					newPosList[key][pos] = freq
+
+		count = 0
+		for key,partsOfSpeech in self.posList.items():
+			for pos,value in partsOfSpeech.items():
+				count+=1
+				self.cursor.execute("INSERT into PosBigrams VALUES (?,?,?,?)",
+						(count,key,pos,value))
+		
+		self.connection.commit()	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+				
