@@ -19,11 +19,7 @@ class DatabaseInit:
 		self.sevenCount = 0
 		self.segmentList = {}
 		self.posList = {}
-		#self.posSize = 0
 	
-	def initialize(self):
-		self.TablesInit()
-
 	def TablesInit(self):
 		self.cursor.execute('''CREATE TABLE FiveSyllables
 					(id integer primary key, segment text)''')
@@ -51,7 +47,7 @@ class DatabaseInit:
 		
 	def SyllableTablesInit(self,line,fileNumber):
 		#populates data in FiveSyllables Table and SevenSyllables Table
-
+		    
 		culledLine = " ".join([word.strip("\r\n") for word in line.split("\t")[1:(fileNumber+3)]])
 				
 		if culledLine.lower() not in self.segmentList:
@@ -71,6 +67,12 @@ class DatabaseInit:
 			
 		
 	def BuildPosTable(self,line,fileNumber):
+		'''
+		   creates a dictionary of dictionaries
+		   upper tier' keys denote the first part of speech
+		   and lower tier keys represent parts of speech that follow.
+		   values are the frequencies with which the pos pairings occur
+		''' 
 		splitLine = line.split("\t")
 		count = int(splitLine[0])
 		partsOfSpeech = [word.strip("\t\r\n") for word in splitLine[fileNumber+3:]] 	
@@ -95,7 +97,12 @@ class DatabaseInit:
 	
 		#self.posSize+=count	
 				
-	def PosTablesInit(self):	
+	def PosTablesInit(self):
+		'''
+		    takes the data created in BuildPosTable, 
+		    normalizes the frequency, and inserts a copy of
+		    the dictionary into the database	
+		'''
 		newPosList = {}
 		
 		for key,partsOfSpeech in self.posList.items():

@@ -14,5 +14,5 @@ print cursor.fetchall()
 #from dataCreation.populateData import DatabaseInit
 
 #x = DatabaseInit()
-#x.initialize()
+#x.TablesInit()
 
