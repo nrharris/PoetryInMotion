@@ -4,15 +4,16 @@ x = sqlite3.connect("data/haiku.db")
 
 cursor = x.cursor()
 
-cursor.execute("select * from PosBigrams")
+cursor.execute("select * from Bigrams")
 print cursor.fetchall()
 
 #from wordMethods.haiku import createNaiveHaiku
 
 #createNaiveHaiku()
 
-#from dataCreation.populateData import DatabaseInit
+'''
+from dataCreation.populateData import DatabaseInit
 
-#x = DatabaseInit()
-#x.TablesInit()
-
+x = DatabaseInit()
+x.TablesInit()
+'''
