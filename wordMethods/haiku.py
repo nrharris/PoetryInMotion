@@ -1,4 +1,5 @@
-from sounds import SyllableCounter
+from wordMethods.sounds import SyllableCounter
+from evolution.mutate import mutate, fitness
 from random import randint
 import sqlite3
 
@@ -30,11 +31,25 @@ def createNaiveHaiku():
 	firstIndex = int(randint(1,numFiveRecords))
 	secondIndex = int(randint(1,numSevenRecords))
 	thirdIndex = int(randint(1,numFiveRecords))
+
+	haiku = []
 	
 	cursor.execute("select segment from FiveSyllables where id = ?",(firstIndex,))
-	print cursor.fetchone()[0]
+	haiku.append(cursor.fetchone()[0])
 	cursor.execute("select segment from SevenSyllables where id = ?",(secondIndex,))
-	print cursor.fetchone()[0]
+	haiku.append(cursor.fetchone()[0])
 	cursor.execute("select segment from FiveSyllables where id = ?",(thirdIndex,))
-	print cursor.fetchone()[0]
+	haiku.append(cursor.fetchone()[0])
+	
+	connection.close()
+	return "\n".join(haiku)
+
+def createEvolvedHaiku():
+	initialHaiku = createNaiveHaiku()
+	
+	for i in xrange(10):
+		initialHaiku = mutate(initialHaiku)
+		print mutate(initialHaiku) + "\n"
+	
 		
+
