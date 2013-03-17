@@ -47,9 +47,21 @@ def createNaiveHaiku():
 def createEvolvedHaiku():
 	initialHaiku = createNaiveHaiku()
 	
-	for i in xrange(10):
+	fitnessLevel = fitness(initialHaiku)
+
+	bestHaiku = initialHaiku
+	bestFitness = fitnessLevel
+
+	for i in xrange(1000): 
 		initialHaiku = mutate(initialHaiku)
-		print mutate(initialHaiku) + "\n"
+		fitnessLevel = fitness(initialHaiku)
+		
+		if fitnessLevel > bestFitness:
+			bestHaiku = initialHaiku
+			bestFitness = fitnessLevel
+
+		print initialHaiku + "\n"
 	
+	print "Best Haiku is :\n"+bestHaiku
 		
 
