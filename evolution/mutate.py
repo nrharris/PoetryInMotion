@@ -29,26 +29,61 @@ def mutate(haiku):
 	
 	return "\n".join(lines)
 	
- 	
-	#splits = [line.split(" ") for line in haiku.split("\n")]	
-	#words = [str(word) for word in list(itertools.chain(*splits))]
-	
-		
+ 			
 
 def fitness(haiku):
-	score = 0
+	#variable declaration
+	connection = sqlite3.connect("data/haiku.db")
+	cursor = connection.cursor()
 
-	firstLetter = haiku[0]
-	
-	if ord(firstLetter.capitalize()) == ord(firstLetter):
-		score += 100
+	score = 0
 	
 	splits = [line.split(" ") for line in haiku.split("\n")]	
 	words = [str(word) for word in list(itertools.chain(*splits))]
 	
-	for word in [word.lower() for word in words]:
-		if word[0] == 'a':
-			score+=75
+	#First word capitalized, logical sentence start	
+	firstLetter = haiku[0]	
+	if ord(firstLetter.capitalize()) == ord(firstLetter):
+		score += 200
+	
+	#First and second lines are likely to provide some continuity
+	firstWord = splits[0][-1]
+	secondWord = splits[1][0]
+
+	cursor.execute("select count(*) from Bigrams where firstWord = ? and secondWord = ?",(firstWord,secondWord,))
+			
+	count = cursor.fetchone()[0] 
+	if count > 0:
+		score+=100
+		
+	#Grammatically correct sentence endings
+	secondLinePrec = splits[1][-2]
+	secondLineEnd = splits[1][-1]
+	cursor.execute("select secondPos from Bigrams where firstWord = ? and secondWord = ?", (secondLinePrec,secondLineEnd,))
+	
+	try:
+		secondLinePos = cursor.fetchone()[0].lower()
+		if secondLinePos[0] != 'd' and secondLinePos[0] != 'v':
+			score+=100
+	except:
+		pass
+
+	finalLinePrec = splits[2][-2]
+	finalLineEnd = splits[2][-1]
+	cursor.execute("select secondPos from Bigrams where firstWord = ? and secondWord = ?",(finalLinePrec, finalLineEnd,))
+	
+	try:
+		finalLinePos = cursor.fetchone()[0].lower()
+		if finalLinePos[0] != 'd' and finalLinePos[0] != 'v':
+			score+=100
+	except:
+		pass
+
+	#Third line capitalized, creates juxtaposition
+	thirdStart = splits[2][0][0]
+
+	if ord(thirdStart.capitalize()) == ord(thirdStart):
+		score += 200
 
 
 	return score
