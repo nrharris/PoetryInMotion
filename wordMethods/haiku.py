@@ -60,8 +60,10 @@ def createEvolvedHaiku():
 			bestHaiku = initialHaiku
 			bestFitness = fitnessLevel
 
-		print initialHaiku + "\n"
+		print initialHaiku  + "\n"
 	
 	print "Best Haiku is :\n"+bestHaiku
+	print "\nEvaluation is:\n" + str(bestFitness)
+	
 		
 
