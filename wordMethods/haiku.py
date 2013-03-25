@@ -1,5 +1,6 @@
 from wordMethods.sounds import SyllableCounter
 from evolution.mutate import mutate, fitness
+from wordMethods.partsOfSpeech import pos
 from random import randint
 import sqlite3
 
@@ -52,7 +53,7 @@ def createEvolvedHaiku():
 	bestHaiku = initialHaiku
 	bestFitness = fitnessLevel
 
-	for i in xrange(1000): 
+	for i in xrange(5000):
 		initialHaiku = mutate(initialHaiku)
 		fitnessLevel = fitness(initialHaiku)
 		
@@ -64,6 +65,6 @@ def createEvolvedHaiku():
 	
 	print "Best Haiku is :\n"+bestHaiku
 	print "\nEvaluation is:\n" + str(bestFitness)
-	
+	print pos(bestHaiku)
 		
 
