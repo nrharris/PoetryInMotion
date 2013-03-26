@@ -52,8 +52,10 @@ def createEvolvedHaiku():
 
 	bestHaiku = initialHaiku
 	bestFitness = fitnessLevel
-
-	for i in xrange(5000):
+	
+	count = 0
+	for i in xrange(2000):
+		count+=1
 		initialHaiku = mutate(initialHaiku)
 		fitnessLevel = fitness(initialHaiku)
 		
@@ -62,7 +64,8 @@ def createEvolvedHaiku():
 			bestFitness = fitnessLevel
 
 		print initialHaiku  + "\n"
-	
+		print "count is: " + str(count)
+
 	print "Best Haiku is :\n"+bestHaiku
 	print "\nEvaluation is:\n" + str(bestFitness)
 	print pos(bestHaiku)

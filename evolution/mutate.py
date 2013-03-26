@@ -1,4 +1,5 @@
 from wordMethods.sounds import SyllableCounter
+from wordMethods.partsOfSpeech import pos
 from nltk.corpus import wordnet as wn
 from random import randint
 from random import choice
@@ -35,17 +36,30 @@ def fitness(haiku):
 	words = [str(word) for word in list(itertools.chain(*splits))]
  	
 	similarity = 0
-	treeSet = wn.synsets("tree",wn.NOUN)[0]
 	
-	for word in words:
-		if wn.morphy(word,wn.NOUN):
-			noun = wn.synsets(word,wn.NOUN)[0]
-			if similarity < treeSet.path_similarity(noun):
-				similarity = treeSet.path_similarity(noun)
-	print similarity			
-	#return (6/(len(words)+0.0)) * 100 
-	return similarity
+	wordPos = pos(haiku)	
+	
+	nouns = [thing for thing in wordPos if 'nn' in thing[1]]
+	
+	for noun in nouns:
+		if wn.morphy(noun[0],wn.NOUN):
+			nounSyns = wn.synsets(noun[0],wn.NOUN)
 
+			for comparedNoun in nouns:
+				if wn.morphy(comparedNoun[0],wn.NOUN) and comparedNoun[2]!=noun[2]:
+					for synset in nounSyns:
+						if comparedNoun[0] in synset.lemma_names:
+							similarity+=10				
+	
+	size = (6/(len(words)+0.0))
+	score = similarity*size
+	
+	if score < .01:
+		score = size
+	
+	print score
+	return score
+	
 '''def fitness(haiku):
 	splits = [line.split(" ") for line in haiku.split("\n")]	
 	words = [str(word) for word in list(itertools.chain(*splits))]
