@@ -39,7 +39,7 @@ def fitness(haiku):
 	
 	wordPos = pos(haiku)	
 	
-	nouns = [thing for thing in wordPos if 'nn' in thing[1]]
+	nouns = [thing for thing in wordPos if 'NN' in thing[1]]
 	
 	for noun in nouns:
 		if wn.morphy(noun[0],wn.NOUN):

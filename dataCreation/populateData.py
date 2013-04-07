@@ -124,7 +124,8 @@ class DatabaseInit:
 
 
 	def convertPos(self,pos):
-		pos = re.sub("\d+","",pos).upper()
+		#pos = re.sub("\d+","",pos).upper()
+		pos = pos.upper()
 
 		if pos in self.conversion:
 			return self.conversion[pos]

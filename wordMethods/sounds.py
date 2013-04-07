@@ -35,18 +35,22 @@ class Rhymer():
 
 
 class SyllableCounter():
-	
+
 	def __init__(self):
 		self.pronunciationDict = nltk.corpus.cmudict.dict()
 	
 	def getLineCounts(self,words):
 		#returns cumulative syllable counts of each line
-		lines = words.split("\n")
+		lines = words.splitlines()
+		
 		lineCounts = []
 			
 		for line in lines:
 			count = 0
 			for word in line.split(" "):
+				word = word.strip(",-!?.;: ")
+				if len(word)==0:
+					break
 				if word.lower() not in self.pronunciationDict:
 					return False
 				count+=self.syllableCount(word.lower())
@@ -65,4 +69,3 @@ class SyllableCounter():
 			if syllable[-1].isdigit():
 				count+=1 
 		return count
-
