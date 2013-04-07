@@ -72,9 +72,9 @@ def createEvolvedHaiku():
 
 def grammarHaiku():
 	sc = SyllableCounter()
-	grammar = [["RB", "VBG"],
-		   ["PRP$", "NNS"], 
-		   ["VB", "VBG"]]			
+	grammar = [["NN", "NN"],
+		   ["DT", "NN","IN","DT","NN"], 
+		   ["NNS", "IN","DT","NN"]]			
 	
 	connection = sqlite3.connect('data/haiku.db')
 	cursor = connection.cursor()
@@ -84,22 +84,19 @@ def grammarHaiku():
 
 	lineNum = 0
 	
-	for row in cursor.execute("select * from Bigrams where secondPos = ?",("VB",)):
-		print row
 
-	'''for line in grammar:
+	for line in grammar:
 		someLine = ""
 		
 		for pos in line:
 			syllableDiff = expectedLengths[lineNum] - lengths[lineNum]
-			print pos
  
-			result = [row for row in cursor.execute("select firstWord from Bigrams where firstPos = ?",
-								(pos,))]
+			result = [row for row in cursor.execute("select firstWord from Bigrams where firstPos = ? and firstSyllables <= ?",
+								(pos,syllableDiff,))]
 			
 			newWord = str(result[int(randint(1,len(result)))][0])
 			lengths[lineNum]+=sc.syllableCount(newWord)
 			someLine += newWord + " "
 		
 		print someLine
-		lineNum +=1	'''	
+		lineNum +=1	
