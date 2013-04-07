@@ -34,12 +34,9 @@ class DatabaseInit:
 		self.cursor.execute('''CREATE TABLE SevenSyllables
 					(id integer primary key, segment text)''')
 		
-		self.cursor.execute('''CREATE TABLE PosBigrams
-					(id integer primary key, firstPOS text, secondPOS text, frequency float)''')
-		
 		self.cursor.execute('''CREATE TABLE Bigrams
 					(id integer primary key, firstWord text, firstPos text, secondWord text,
-					secondPos text,frequency float)''')
+					secondPos text,frequency float, firstSyllables integer,secondSyllables integer)''')
 
 
 		
@@ -114,14 +111,16 @@ class DatabaseInit:
 			for word,information in self.bigramList[key].items():
 				if word != "totCount":
 					count+=1
-					information[2] = float("{0:.2f}".format(information[2]/(self.bigramList[key]["totCount"]+0.0)))
-					
-					self.cursor.execute("INSERT into Bigrams VALUES (?,?,?,?,?,?)",
-								(count,key,information[0],word,information[1],information[2]))
+					keySyllables = self.syllableCounter.syllableCount(key) 
+					wordSyllables = self.syllableCounter.syllableCount(word)
 
-					#print key + " " + word + " " + information[0] + " " + information[1]
+					information[2] = float("{0:.2f}".format(information[2]/(self.bigramList[key]["totCount"]+0.0)))
+						
+					self.cursor.execute("INSERT into Bigrams VALUES (?,?,?,?,?,?,?,?)",
+								(count,key,information[0],word,information[1],information[2],
+								 keySyllables,wordSyllables))
+
 		self.connection.commit()
-		#print self.bigramList	
 
 
 	def convertPos(self,pos):

@@ -50,19 +50,13 @@ def fitness(haiku):
 					for synset in nounSyns:
 						if comparedNoun[0] in synset.lemma_names:
 							similarity+=10				
-	
-	size = (6/(len(words)+0.0))
-	score = similarity*size
-	
-	if score < .01:
-		score = size
-	
-	print score
-	return score
-	
+	print similarity	
+	return similarity
+
+
 '''def fitness(haiku):
 	splits = [line.split(" ") for line in haiku.split("\n")]	
 	words = [str(word) for word in list(itertools.chain(*splits))]
 	print (6/(len(words)+0.0)) * 100 
 	
-	return (6/(len(words)+0.0)) * 100 '''
+	return (6/(len(words)+0.0)) * 100'''
