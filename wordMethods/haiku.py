@@ -76,6 +76,10 @@ def grammarHaiku():
 		   ["DT", "NN","IN","DT","NN"], 
 		   ["NNS", "IN","DT","NN"]]			
 	
+	newGrammar = [[None]*len(grammar[0]),
+		      [None]*len(grammar[1]),
+		      [None]*len(grammar[2])] 
+
 	connection = sqlite3.connect('data/haiku.db')
 	cursor = connection.cursor()
 	
@@ -85,18 +89,37 @@ def grammarHaiku():
 	lineNum = 0
 	
 
-	for line in grammar:
+	for line in xrange(len(grammar)):
 		someLine = ""
 		
-		for pos in line:
-			syllableDiff = expectedLengths[lineNum] - lengths[lineNum]
- 
-			result = [row for row in cursor.execute("select firstWord from Bigrams where firstPos = ? and firstSyllables <= ?",
-								(pos,syllableDiff,))]
+		index = 0
 			
-			newWord = str(result[int(randint(1,len(result)))][0])
-			lengths[lineNum]+=sc.syllableCount(newWord)
-			someLine += newWord + " "
-		
-		print someLine
-		lineNum +=1	
+		while index < len(grammar[line]):
+			if index == 0:
+				wordList = [row for row in 
+					cursor.execute("select firstWord,secondWord from Bigrams where firstPos =? and secondPos =?",
+					(grammar[line][index],grammar[line][index+1],))]
+				
+				randomIndex = int(randint(0,len(wordList)-1))
+				newGrammar[line][index] = str(wordList[randomIndex][0])
+				newGrammar[line][index+1] = str(wordList[randomIndex][1])
+				
+				index +=2
+				continue 
+			else:
+				wordList = [row for row in 
+					cursor.execute("select secondWord from Bigrams where firstWord = ? and secondPos = ?",
+					(newGrammar[line][index-1],grammar[line][index],))]
+				
+				if len(wordList) == 0:
+					wordList = [row for row in
+					cursor.execute("select secondWord from Bigrams where firstPos = ? and secondPos = ?",
+					(grammar[line][index-1],grammar[line][index],))]
+					
+				randomIndex = int(randint(0,len(wordList)-1))
+
+				newGrammar[line][index] = str(wordList[randomIndex][0])
+				
+			index+=1
+
+	print "\n".join([" ".join(line) for line in [line for line in newGrammar]])
