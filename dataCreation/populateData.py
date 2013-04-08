@@ -39,7 +39,12 @@ class DatabaseInit:
 					secondPos text,frequency float, firstSyllables integer,secondSyllables integer)''')
 
 
-		
+		self.cursor.execute('''CREATE TABLE PoeticBigrams
+					(firstWord text, firstPos text, secondWord text,
+					secondPos text, firstSyllables integer,secondSyllables integer)''')
+
+		self.PoeticBigrams()
+	
 		for i in xrange(len(self.fileList)):
 			f = open(self.fileList[i])
 			for line in f:
@@ -122,6 +127,36 @@ class DatabaseInit:
 
 		self.connection.commit()
 
+	def PoeticBigrams(self):
+
+		f = open("data/haiku_samples/tagged_haiku")
+		count = 0
+
+		for line in f:
+			splits = line.split(" ")
+	
+			if count % 3 == 0 or line == "\n":
+				count += 1
+				continue
+
+			if count == 0 or count % 4 == 0:
+				self.cursor.execute("INSERT into PoeticBigrams VALUES (?,?,?,?,?,?)",
+							("S==>","S==>",splits[0].split("/")[0],splits[0].split("/")[1],
+							 0,self.syllableCounter.syllableCount(splits[0].split("/")[0]),))
+			else:
+				for index in xrange(len(splits)-2):
+					firstWord = splits[index].split("/")[0]
+					secondWord = splits[index+1].split("/")[0]
+					firstPos = splits[index].split("/")[1]
+					secondPos = splits[index+1].split("/")[1]
+					
+					firstSyllables = self.syllableCounter.syllableCount(firstWord)
+					secondSyllables = self.syllableCounter.syllableCount(secondWord)
+					
+					self.cursor.execute("INSERT into PoeticBigrams VALUES (?,?,?,?,?,?)",
+								(firstWord,firstPos,secondWord,secondPos,firstSyllables,secondSyllables,))
+					
+			count+=1
 
 	def convertPos(self,pos):
 		#pos = re.sub("\d+","",pos).upper()

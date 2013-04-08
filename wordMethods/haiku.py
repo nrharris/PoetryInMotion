@@ -97,7 +97,7 @@ def grammarHaiku():
 		while index < len(grammar[line]):
 			if index == 0:
 				wordList = [row for row in 
-					cursor.execute("select firstWord,secondWord from Bigrams where firstPos =? and secondPos =?",
+					cursor.execute("select firstWord,secondWord from PoeticBigrams where firstPos =? and secondPos =?",
 					(grammar[line][index],grammar[line][index+1],))]
 				
 				randomIndex = int(randint(0,len(wordList)-1))
@@ -108,12 +108,12 @@ def grammarHaiku():
 				continue 
 			else:
 				wordList = [row for row in 
-					cursor.execute("select secondWord from Bigrams where firstWord = ? and secondPos = ?",
+					cursor.execute("select secondWord from PoeticBigrams where firstWord = ? and secondPos = ?",
 					(newGrammar[line][index-1],grammar[line][index],))]
 				
 				if len(wordList) == 0:
 					wordList = [row for row in
-					cursor.execute("select secondWord from Bigrams where firstPos = ? and secondPos = ?",
+					cursor.execute("select secondWord from PoeticBigrams where firstPos = ? and secondPos = ?",
 					(grammar[line][index-1],grammar[line][index],))]
 					
 				randomIndex = int(randint(0,len(wordList)-1))
