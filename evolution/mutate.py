@@ -5,72 +5,72 @@ from random import choice
 import sqlite3
 import itertools
 
-def mutate(haiku):
-	connection = sqlite3.connect("data/haiku.db")
-	cursor = connection.cursor()
+class Individual:
 	
-	lines = haiku.split("\n")	
+	def __init__(self):
+		self.syllableCounter = SyllableCounter()
 	
-	randomSelection = randint(1,11)
+	def mutate(self,haiku):
+		connection = sqlite3.connect("data/haiku.db")
+		cursor = connection.cursor()
 	
-	if randomSelection < 6:
-		cursor.execute("Select count(*) from FiveSyllables")
-		fiveUpperBound = cursor.fetchone()[0]
-		randomIndex = int(randint(0,fiveUpperBound))
-		cursor.execute("Select segment from FiveSyllables where id = ?",(randomIndex,))
+		lines = haiku.split("\n")	
+	
+		randomSelection = randint(1,11)
+	
+		if randomSelection < 6:
+			cursor.execute("Select count(*) from FiveSyllables")
+			fiveUpperBound = cursor.fetchone()[0]
+			randomIndex = int(randint(0,fiveUpperBound))
+			cursor.execute("Select segment from FiveSyllables where id = ?",(randomIndex,))
 		
-		randomLine = choice([0,2])
-		lines[randomLine] = cursor.fetchone()[0]
-	else:
-		cursor.execute("Select count(*) from SevenSyllables")
-		sevenUpperBound = cursor.fetchone()[0]
-		randomIndex = int(randint(0,sevenUpperBound))
-		cursor.execute("Select segment from SevenSyllables where id = ?",(randomIndex,))
-		lines[1] = cursor.fetchone()[0]	
+			randomLine = choice([0,2])
+			lines[randomLine] = cursor.fetchone()[0]
+		else:
+			cursor.execute("Select count(*) from SevenSyllables")
+			sevenUpperBound = cursor.fetchone()[0]
+			randomIndex = int(randint(0,sevenUpperBound))
+			cursor.execute("Select segment from SevenSyllables where id = ?",(randomIndex,))
+			lines[1] = cursor.fetchone()[0]	
 	
-	return "\n".join(lines)
+		return "\n".join(lines)
 
 	
-'''def fitness(haiku):
-	splits = [line.split(" ") for line in haiku.split("\n")]	
-	words = [str(word) for word in list(itertools.chain(*splits))]
+	def fitness(self,haiku):
+		splits = [line.split(" ") for line in haiku.split("\n")]	
+		words = [str(word) for word in list(itertools.chain(*splits))]
  	
-	similarity = 0
-	
-	wordPos = pos(haiku)	
-	
-	nouns = [thing for thing in wordPos if 'NN' in thing[1]]
-	
-	for noun in nouns:
-		if wn.morphy(noun[0],wn.NOUN):
-			nounSyns = wn.synsets(noun[0],wn.NOUN)
+		similarity = 0	
 
-			for comparedNoun in nouns:
-				if wn.morphy(comparedNoun[0],wn.NOUN) and comparedNoun[2]!=noun[2]:
-					for synset in nounSyns:
-						if comparedNoun[0] in synset.lemma_names:
-							similarity+=10				
-	print similarity	
-	return similarity
-'''
+		for word in words:
+			if wn.morphy(word,wn.NOUN):
+				nounSyns = wn.synsets(word,wn.NOUN)
 
-sc = SyllableCounter()
-
-def fitness(haiku):	
-	
-	haikuCounts = [5,7,5]
-	lineCounts = []
-	splits = [line.split(" ") for line in haiku.split("\n")]	
- 		
-	for line in splits:
-		count = 0
-		for word in line:	
-			count += sc.syllableCount(word)
+				for secondWord in words:
+					if wn.morphy(secondWord,wn.NOUN) and word!=secondWord:
+						for synset in nounSyns:
+							if secondWord in synset.lemma_names:
+								similarity+=10
+		similarity+=self.isHaiku(haiku)
 			
-		lineCounts.append(count)
-	
-	if haikuCounts == lineCounts:
-		return 100
-	else:
-		return 0
+		print similarity	
+		return similarity
 
+
+	def isHaiku(self,haiku):	
+		
+		haikuCounts = [5,7,5]
+		lineCounts = []
+		splits = [line.split(" ") for line in haiku.split("\n")]	
+ 		
+		for line in splits:
+			count = 0
+			for word in line:	
+				count += self.syllableCounter.syllableCount(word)
+			
+			lineCounts.append(count)
+	
+		if haikuCounts == lineCounts:
+			return 200
+		else:
+			return 0

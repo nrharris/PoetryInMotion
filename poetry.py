@@ -1,6 +1,7 @@
-from wordMethods.haiku import evolvedGrammarHaiku
+from wordMethods.haiku import Haiku
 
-print evolvedGrammarHaiku()
+haiku = Haiku()
+haiku.evolvedGrammarHaiku()
 
 '''
 from dataCreation.populateData import DatabaseInit
