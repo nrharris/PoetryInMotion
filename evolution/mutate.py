@@ -1,5 +1,4 @@
 from wordMethods.sounds import SyllableCounter
-from wordMethods.partsOfSpeech import pos
 from nltk.corpus import wordnet as wn
 from random import randint
 from random import choice
@@ -31,7 +30,8 @@ def mutate(haiku):
 	
 	return "\n".join(lines)
 
-def fitness(haiku):
+	
+'''def fitness(haiku):
 	splits = [line.split(" ") for line in haiku.split("\n")]	
 	words = [str(word) for word in list(itertools.chain(*splits))]
  	
@@ -52,11 +52,25 @@ def fitness(haiku):
 							similarity+=10				
 	print similarity	
 	return similarity
+'''
 
+sc = SyllableCounter()
 
-'''def fitness(haiku):
-	splits = [line.split(" ") for line in haiku.split("\n")]	
-	words = [str(word) for word in list(itertools.chain(*splits))]
-	print (6/(len(words)+0.0)) * 100 
+def fitness(haiku):	
 	
-	return (6/(len(words)+0.0)) * 100'''
+	haikuCounts = [5,7,5]
+	lineCounts = []
+	splits = [line.split(" ") for line in haiku.split("\n")]	
+ 		
+	for line in splits:
+		count = 0
+		for word in line:	
+			count += sc.syllableCount(word)
+			
+		lineCounts.append(count)
+	
+	if haikuCounts == lineCounts:
+		return 100
+	else:
+		return 0
+

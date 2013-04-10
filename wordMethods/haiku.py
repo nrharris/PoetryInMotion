@@ -4,6 +4,8 @@ from wordMethods.partsOfSpeech import pos
 from random import randint
 import sqlite3
 
+sc = SyllableCounter()
+
 def isHaiku(text):
 	sc = SyllableCounter()
 	counts = sc.getLineCounts(text)
@@ -53,9 +55,7 @@ def createEvolvedHaiku():
 	bestHaiku = initialHaiku
 	bestFitness = fitnessLevel
 	
-	count = 0
 	for i in xrange(2000):
-		count+=1
 		initialHaiku = mutate(initialHaiku)
 		fitnessLevel = fitness(initialHaiku)
 		
@@ -64,14 +64,14 @@ def createEvolvedHaiku():
 			bestFitness = fitnessLevel
 
 		print initialHaiku  + "\n"
-		print "count is: " + str(count)
+		print "count is: " + str(i)
 
 	print "Best Haiku is :\n"+bestHaiku
 	print "\nEvaluation is:\n" + str(bestFitness)
 	print pos(bestHaiku)
 
 def grammarHaiku():
-	sc = SyllableCounter()
+	#sc = SyllableCounter()
 	grammar = [["NN", "NN"],
 		   ["DT", "NN","IN","DT","NN"], 
 		   ["NNS", "IN","DT","NN"]]			
@@ -83,18 +83,11 @@ def grammarHaiku():
 	connection = sqlite3.connect('data/haiku.db')
 	cursor = connection.cursor()
 	
-	lengths = [0,0,0]
-	expectedLengths = [5,7,5]
-
-	lineNum = 0
-	
-
 	for line in xrange(len(grammar)):
-		someLine = ""
 		
-		index = 0
+		someLine = ""
 			
-		while index < len(grammar[line]):
+		for index in xrange(len(grammar[line])):
 			if index == 0:
 				wordList = [row for row in 
 					cursor.execute("select firstWord,secondWord from PoeticBigrams where firstPos =? and secondPos =?",
@@ -104,7 +97,7 @@ def grammarHaiku():
 				newGrammar[line][index] = str(wordList[randomIndex][0])
 				newGrammar[line][index+1] = str(wordList[randomIndex][1])
 				
-				index +=2
+				index +=1
 				continue 
 			else:
 				wordList = [row for row in 
@@ -120,6 +113,27 @@ def grammarHaiku():
 
 				newGrammar[line][index] = str(wordList[randomIndex][0])
 				
-			index+=1
 
-	print "\n".join([" ".join(line) for line in [line for line in newGrammar]])
+	return "\n".join([" ".join(line) for line in [line for line in newGrammar]])
+
+def evolvedGrammarHaiku():
+	
+	bestHaiku = ""
+	bestFitness = 0
+	currFitness = 0
+	
+	for i in xrange(1000):
+		newHaiku = grammarHaiku()
+		currFitness = fitness(newHaiku)
+		print newHaiku
+		print currFitness
+		print "\n"
+
+		if currFitness > bestFitness:
+			bestHaiku = newHaiku
+			bestFitness = currFitness
+
+	print "Best haiku is:"
+	print bestHaiku
+	print bestFitness		
+			
