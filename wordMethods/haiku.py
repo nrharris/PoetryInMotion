@@ -3,12 +3,14 @@ from evolution.mutate import Individual
 from wordMethods.partsOfSpeech import pos
 from random import randint
 import sqlite3
+import string
 
 class Haiku:
 
 	def __init__(self):
 		self.syllableCounter = SyllableCounter()
-	
+		self.grammar = self.setGrammar()
+			
 	def isHaiku(self,text):
 		counts = self.syllableCounter.getLineCounts(text)
 		expectedCounts = [5,7,5]
@@ -59,7 +61,7 @@ class Haiku:
 		bestFitness = fitnessLevel
 	
 		for i in xrange(2000):
-			initialHaiku = individual.mutate(initialHaiku)
+			initialHaiku = individual.naiveMutate(initialHaiku)
 			fitnessLevel = individual.fitness(initialHaiku)
 		
 			if fitnessLevel > bestFitness:
@@ -73,10 +75,12 @@ class Haiku:
 		print "\nEvaluation is:\n" + str(bestFitness)
 
 	def grammarHaiku(self):
-		grammar = [["NN", "NN"],
-			   ["DT", "NN","IN","DT","NN"], 
-		 	   ["NNS", "IN","DT","NN"]]			
-	
+		#grammar = [["NN", "NN", "-"],
+		#	   ["DT", "NN","IN","DT","NN"], 
+		# 	   ["NNS", "IN","DT","NN"]]			
+		
+		grammar = self.grammar
+		#print grammar
 		newGrammar = [[None]*len(grammar[0]),
 			      [None]*len(grammar[1]),
 		      	      [None]*len(grammar[2])] 
@@ -89,12 +93,23 @@ class Haiku:
 			someLine = ""
 			
 			for index in xrange(len(grammar[line])):
+				if grammar[line][index] in string.punctuation:
+					newGrammar[line][index] = grammar[line][index]
+					continue
+
 				if index == 0:
 					query = "select firstWord,secondWord from PoeticBigrams where firstPos=? and secondPos=?"
 					
 					wordList = [row for row in 
 						cursor.execute(query,(grammar[line][index],grammar[line][index+1],))]
-				
+					
+					if len(wordList) == 0:
+						query = "select firstWord from PoeticBigrams where firstPos=?"
+						wordList = [row for row in cursor.execute(query,(grammar[line][index],))]
+						randomIndex = int(randint(0,len(wordList)-1))
+						newGrammar[line][index] = str(wordList[randomIndex][0])
+						continue
+								
 					randomIndex = int(randint(0,len(wordList)-1))
 					newGrammar[line][index] = str(wordList[randomIndex][0])
 					newGrammar[line][index+1] = str(wordList[randomIndex][1])
@@ -110,13 +125,44 @@ class Haiku:
 						wordList = [row for row in
 						cursor.execute("select secondWord from PoeticBigrams where firstPos = ? and secondPos = ?",
 						(grammar[line][index-1],grammar[line][index],))]
-					
+				
+					if len(wordList) == 0:
+						wordList = [row for row in 
+						cursor.execute("select firstWord from PoeticBigrams where firstPos = ?",
+						(grammar[line][index],))]
+	
 					randomIndex = int(randint(0,len(wordList)-1))
 
 					newGrammar[line][index] = str(wordList[randomIndex][0])
 				
 
 		return "\n".join([" ".join(line) for line in [line for line in newGrammar]])
+	
+	def setGrammar(self):
+		count = 0
+		grammar = ""
+		grammars = []
+
+		for line in open("data/haiku_grammar/grammar"):
+			count+=1
+			if count%4==0:
+				grammars.append(grammar)
+				grammar = ""
+			grammar+=line
+
+		randIndex = int(randint(0,len(grammars)))
+		
+		newGrammars = []
+			
+		if len(grammars[randIndex].splitlines()[0]) > 1:
+			splitLines = grammars[randIndex].splitlines()
+		else:
+			splitLines = grammars[randIndex].splitlines()[1:]
+
+		for line in splitLines:
+			newGrammars.append(line.split(" "))
+		
+		return newGrammars
 
 	def evolvedGrammarHaiku(self):
 	
@@ -129,9 +175,11 @@ class Haiku:
 		for i in xrange(5000):
 			newHaiku = self.grammarHaiku()
 			currFitness = individual.fitness(newHaiku)
-			print newHaiku
-			print currFitness
-			print "\n"
+			
+			if currFitness != 0:
+				print newHaiku
+				print currFitness
+				print "\n"
 
 			if currFitness > bestFitness:
 				bestHaiku = newHaiku

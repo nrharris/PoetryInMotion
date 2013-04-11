@@ -10,7 +10,7 @@ class Individual:
 	def __init__(self):
 		self.syllableCounter = SyllableCounter()
 	
-	def mutate(self,haiku):
+	def naiveMutate(self,haiku):
 		connection = sqlite3.connect("data/haiku.db")
 		cursor = connection.cursor()
 	
@@ -53,7 +53,7 @@ class Individual:
 								similarity+=10
 		similarity+=self.isHaiku(haiku)
 			
-		print similarity	
+		#print similarity	
 		return similarity
 
 

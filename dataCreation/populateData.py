@@ -158,8 +158,18 @@ class DatabaseInit:
 					
 			count+=1
 
+	def GrammarTable(self):
+		count = 0
+		grammar = ""
+
+		for line in open("data/haiku_grammar/grammar"):
+			count+=1
+			if count%4==0:
+				print grammar
+				grammar = ""
+			grammar+=line
+		
 	def convertPos(self,pos):
-		#pos = re.sub("\d+","",pos).upper()
 		pos = pos.upper()
 
 		if pos in self.conversion:
