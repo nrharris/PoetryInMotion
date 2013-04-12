@@ -23,7 +23,7 @@ class DatabaseInit:
 		self.posList = {}
 		self.bigramList = {}
 		self.conversion = {}
-
+		
 		for row in csv.reader(open("data/tagset/conversion.csv","rb")):
 			self.conversion[row[0]] = row[1]
 
@@ -43,8 +43,11 @@ class DatabaseInit:
 					(firstWord text, firstPos text, secondWord text,
 					secondPos text, firstSyllables integer,secondSyllables integer)''')
 
+		self.cursor.execute('''CREATE TABLE WordAssociations
+					(cue text,target text,FSG float,BSG float)''')
 		self.PoeticBigrams()
-	
+		self.WordAssociationInit()
+
 		for i in xrange(len(self.fileList)):
 			f = open(self.fileList[i])
 			for line in f:
@@ -157,6 +160,39 @@ class DatabaseInit:
 								(firstWord,firstPos,secondWord,secondPos,firstSyllables,secondSyllables,))
 					
 			count+=1
+	
+	def WordAssociationInit(self):
+
+		fileList = ["AB.csv",
+			"C.csv",
+			"LO.csv",
+			"PR.csv",
+			"TZ.csv",
+			"DF.csv",
+			"GK.csv",
+			"S.csv"]
+
+		path = "data/associations/"
+
+		for files in fileList:
+			s = csv.reader(open(path + files))
+			
+			for row in s:
+				try:
+					FSG = float(row[5])
+				except:
+					FSG = 0.0
+				
+				try:
+					BSG = float(row[6])
+				except:	
+					BSG = 0.0
+				
+				cue = row[0].lower().strip(" ")
+				target = row[1].lower().strip(" ")
+
+				self.cursor.execute("INSERT into WordAssociations VALUES (?,?,?,?)",
+							(cue,target,FSG,BSG,))	
 
 	def convertPos(self,pos):
 		pos = pos.upper()
@@ -166,16 +202,3 @@ class DatabaseInit:
 		else:
 			return pos
 			
-
-
-
-
-
-
-
-
-
-
-
-
-				

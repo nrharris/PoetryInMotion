@@ -149,8 +149,10 @@ class Haiku:
 				grammars.append(grammar)
 				grammar = ""
 			grammar+=line
-
-		randIndex = int(randint(0,len(grammars)))
+		
+		randIndex = int(randint(0,len(grammars)-1))
+		#while len(grammars[randIndex].splitlines()) < 1:
+			#randIndex = int(randint(0,len(grammars)))
 		
 		newGrammars = []
 			

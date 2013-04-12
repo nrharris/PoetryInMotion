@@ -63,7 +63,7 @@ class SyllableCounter():
 		word = word.lower()
 	
 		if word not in self.pronunciationDict:
-			return 0
+			return -100
 	
 		for syllable in self.pronunciationDict[word][0]:
 			if syllable[-1].isdigit():
