@@ -1,16 +1,16 @@
-#from wordMethods.haiku import Haiku
+from wordMethods.haiku import Haiku
 
-#haiku = Haiku()
-#haiku.evolvedGrammarHaiku()
+haiku = Haiku()
+haiku.evolvedGrammarHaiku()
 
 #from dataCreation.populateData import DatabaseInit
 
 #d = DatabaseInit()
 #d.TablesInit()
 
-from associations.associations import randomWalk
+#from associations.associations import randomWalk
 
-randomWalk("winter")
+#randomWalk("winter")
 
 '''
 haiku = "" 

@@ -166,13 +166,16 @@ class Haiku:
 		
 		return newGrammars
 
+	def getGrammar(self):
+		return self.grammar
+
 	def evolvedGrammarHaiku(self):
 	
 		bestHaiku = ""
 		bestFitness = 0
 		currFitness = 0
 	
-		individual = Individual()
+		individual = Individual(self.grammar)
 
 		for i in xrange(5000):
 			newHaiku = self.grammarHaiku()
@@ -180,6 +183,7 @@ class Haiku:
 			
 			if currFitness != 0:
 				print newHaiku
+				print individual.mutate(newHaiku)
 				print currFitness
 				print "\n"
 

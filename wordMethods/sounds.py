@@ -57,15 +57,12 @@ class SyllableCounter():
 			lineCounts.append(count)
 		return lineCounts
 		
-	def syllableCount(self,word):
+	def syllableCount(self,word):		
 		#returns syllable count of a single word
-		count = 0
 		word = word.lower()
-	
+    
 		if word not in self.pronunciationDict:
-			return -100
-	
-		for syllable in self.pronunciationDict[word][0]:
-			if syllable[-1].isdigit():
-				count+=1 
-		return count
+     			return -100
+               
+      		return len([syllable for syllable in self.pronunciationDict[word][0] if syllable[-1].isdigit()])
+

@@ -1,4 +1,5 @@
 from wordMethods.sounds import SyllableCounter
+from associations.associations import randomWalk
 from nltk.corpus import wordnet as wn
 from random import randint
 from random import choice
@@ -7,9 +8,10 @@ import itertools
 
 class Individual:
 	
-	def __init__(self):
+	def __init__(self,grammar):
 		self.syllableCounter = SyllableCounter()
-	
+		self.grammar = grammar
+
 	def naiveMutate(self,haiku):
 		connection = sqlite3.connect("data/haiku.db")
 		cursor = connection.cursor()
@@ -35,7 +37,16 @@ class Individual:
 	
 		return "\n".join(lines)
 
+	def mutate(self,haiku):
+		splitHaiku = [line.split(" ") for line in [line for line in haiku.splitlines()]]				
+		print splitHaiku
+		print self.grammar
 	
+		for i in xrange(len(self.grammar)):
+			for j in xrange(len(self.grammar[i])):
+				print randomWalk(splitHaiku[i][j])
+				
+		
 	def fitness(self,haiku):
 		splits = [line.split(" ") for line in haiku.split("\n")]	
 		words = [str(word) for word in list(itertools.chain(*splits))]
