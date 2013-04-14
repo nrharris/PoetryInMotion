@@ -66,3 +66,28 @@ class SyllableCounter():
                
       		return len([syllable for syllable in self.pronunciationDict[word][0] if syllable[-1].isdigit()])
 
+'''sc = SyllableCounter()
+diction = nltk.corpus.cmudict.dict()
+
+print diction["fire"]
+print sc.syllableCount("fire")
+
+print "pin"
+print diction["pin"]
+print sc.syllableCount("pin") 
+
+print "pen"
+print diction["pen"]
+print sc.syllableCount("pen")
+
+print "alligator"
+print diction["alligator"]
+print sc.syllableCount("alligator")
+
+print "antidisestablishmentarianism"
+print diction["antidisestablishmentarianism"]
+print sc.syllableCount("antidisestablishmentarianism")
+
+print sc.syllableCount("windchimes")
+'''
+

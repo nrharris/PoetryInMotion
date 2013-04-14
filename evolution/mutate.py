@@ -38,14 +38,15 @@ class Individual:
 		return "\n".join(lines)
 
 	def mutate(self,haiku):
-		splitHaiku = [line.split(" ") for line in [line for line in haiku.splitlines()]]				
+		'''splitHaiku = [line.split(" ") for line in [line for line in haiku.splitlines()]]				
 		print splitHaiku
 		print self.grammar
 	
 		for i in xrange(len(self.grammar)):
 			for j in xrange(len(self.grammar[i])):
 				print randomWalk(splitHaiku[i][j])
-				
+		'''
+		pass		
 		
 	def fitness(self,haiku):
 		splits = [line.split(" ") for line in haiku.split("\n")]	
@@ -58,7 +59,7 @@ class Individual:
 				nounSyns = wn.synsets(word,wn.NOUN)
 
 				for secondWord in words:
-					if wn.morphy(secondWord,wn.NOUN) and word!=secondWord:
+					if wn.morphy(secondWord,wn.NOUN) and (word not in secondWord and secondWord not in word):
 						for synset in nounSyns:
 							if secondWord in synset.lemma_names:
 								similarity+=10

@@ -1,41 +1,38 @@
 from wordMethods.haiku import Haiku
+import sys
 
-haiku = Haiku()
-haiku.evolvedGrammarHaiku()
+def naive(haiku):
+	return haiku.createEvolvedHaiku()
 
-#from dataCreation.populateData import DatabaseInit
+def grammar(haiku):
+	haiku.evolvedGrammarHaiku()
 
-#d = DatabaseInit()
-#d.TablesInit()
+def init():
+	from dataCreation.populateData import DatabaseInit
+	d = DatabaseInit()
+	d.TablesInit()
 
-#from associations.associations import randomWalk
+def unknown():
+	print "Unknown command"
 
-#randomWalk("winter")
-
-'''
-haiku = "" 
-count = 0
-haikuChecker = Haiku()
-
-for line in open("data/haiku_samples/tagged_haiku"):
-	if len(line) == 1:
-		continue
+if __name__ == "__main__":
 	
-	if count%4==0:
-		grammar = ""
-		words = ""
-		for lines in haiku.splitlines():
-			grammar += " ".join([word.split("/")[1] for word in lines.split(" ") if len(word.split("/")) > 1])+"\n"
-			words += " ".join([word.split("/")[0] for word in lines.split(" ") if len(word.split("/")) > 0])+"\n"
+	haiku = Haiku()
+	
+	if len(sys.argv) > 1:
 		
-		if haikuChecker.isHaiku(words):
-			print grammar
+		commands = ["naive","grammar","init"]
 
-		#print haiku
-		haiku=""
-		count+=1
-		continue
+		if sys.argv[1].lower() == "naive":
+			naive(haiku)
+		if sys.argv[1].lower() == "grammar":
+			grammar(haiku)
+		if sys.argv[1].lower() == "init":
+			init()
 		
-	count+=1	
-	haiku+=line
-'''
+		if sys.argv[1].lower() not in commands:
+			print "Unknown command"
+
+	else:
+		naive(haiku)	
+			

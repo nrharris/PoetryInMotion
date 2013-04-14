@@ -52,7 +52,7 @@ class Haiku:
 		return "\n".join(haiku)
 
 	def createEvolvedHaiku(self):
-		individual = Individual()
+		individual = Individual(self.grammar)
 		initialHaiku = self.createNaiveHaiku()
 	
 		fitnessLevel = individual.fitness(initialHaiku)
@@ -60,7 +60,7 @@ class Haiku:
 		bestHaiku = initialHaiku
 		bestFitness = fitnessLevel
 	
-		for i in xrange(2000):
+		for i in xrange(5000):
 			initialHaiku = individual.naiveMutate(initialHaiku)
 			fitnessLevel = individual.fitness(initialHaiku)
 		
@@ -190,8 +190,9 @@ class Haiku:
 			if currFitness > bestFitness:
 				bestHaiku = newHaiku
 				bestFitness = currFitness
-
+		
 		print "Best haiku is:"
 		print bestHaiku
 		print bestFitness		
-			
+		print self.grammar	
+		
