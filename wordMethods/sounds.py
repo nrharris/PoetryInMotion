@@ -60,7 +60,7 @@ class SyllableCounter():
 		
 	def syllableCount(self,word):		
 		#returns syllable count of a single word
-		word = word.lower()
+		word = word.lower().strip(string.punctuation)
     
 		if word not in self.pronunciationDict:
      			return -100

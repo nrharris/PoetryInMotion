@@ -12,11 +12,16 @@ def init():
 	d = DatabaseInit()
 	d.TablesInit()
 
-def reddit():
+def redditAll():
 	from reddit.worker import Reddit
 	r = Reddit()
 	r.allComments()
 
+def redditSub(sub):
+	from reddit.worker import Reddit
+	r = Reddit()
+	r.subredditComments(sub)
+	
 def unknown():
 	print "Unknown command"
 
@@ -30,12 +35,19 @@ if __name__ == "__main__":
 
 		if sys.argv[1].lower() == "naive":
 			naive(haiku)
+		
 		if sys.argv[1].lower() == "grammar":
 			grammar(haiku)
+		
 		if sys.argv[1].lower() == "init":
 			init()
+		
 		if sys.argv[1].lower() == "reddit":
-			reddit()
+			
+			if len(sys.argv) == 3:
+				redditSub(sys.argv[2].lower())
+			else:
+				redditAll()
 		
 		if sys.argv[1].lower() not in commands:
 			print "Unknown command"
