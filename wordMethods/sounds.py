@@ -1,4 +1,5 @@
 import nltk
+import string
 import re
 
 class Rhymer():
@@ -48,7 +49,7 @@ class SyllableCounter():
 		for line in lines:
 			count = 0
 			for word in line.split(" "):
-				word = word.strip(",-!?.;: ")
+				word = word.strip(string.punctuation)
 				if len(word)==0:
 					break
 				if word.lower() not in self.pronunciationDict:
