@@ -135,7 +135,7 @@ class Haiku:
 		grammar = ""
 		grammars = []
 
-		for line in open("data/haiku_grammar/grammar"):
+		for line in open("data/haiku_grammar/grammar_copy"):
 			count+=1
 			if count%4==0:
 				grammars.append(grammar)
@@ -166,16 +166,18 @@ class Haiku:
 		currFitness = 0
 	
 		individual = Individual(self.grammar)
+		newHaiku = self.grammarHaiku()
 
-		for i in xrange(5000):
-			newHaiku = self.grammarHaiku()
+		for i in xrange(100):
+			#newHaiku = self.grammarHaiku()
+			newHaiku = individual.mutate(newHaiku)
 			currFitness = individual.fitness(newHaiku)
 			
-			if currFitness != 0:
-				print newHaiku
-				print individual.mutate(newHaiku)
-				print currFitness
-				print "\n"
+			#if currFitness != 0:
+			print newHaiku
+			#print individual.mutate(newHaiku)
+			print currFitness
+			print "\n"
 
 			if currFitness > bestFitness:
 				bestHaiku = newHaiku
