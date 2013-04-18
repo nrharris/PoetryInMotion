@@ -38,14 +38,14 @@ class Individual:
 		return "\n".join(lines)
 
 	def mutate(self,haiku):
-		'''splitHaiku = [line.split(" ") for line in [line for line in haiku.splitlines()]]				
+		splitHaiku = [line.split(" ") for line in [line for line in haiku.splitlines()]]				
 		print splitHaiku
 		print self.grammar
 	
 		for i in xrange(len(self.grammar)):
 			for j in xrange(len(self.grammar[i])):
 				print randomWalk(splitHaiku[i][j])
-		'''
+		
 		pass		
 		
 	def fitness(self,haiku):

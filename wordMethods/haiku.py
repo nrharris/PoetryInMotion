@@ -1,6 +1,5 @@
 from wordMethods.sounds import SyllableCounter
 from evolution.mutate import Individual
-from wordMethods.partsOfSpeech import pos
 from random import randint
 import sqlite3
 import string
@@ -75,12 +74,7 @@ class Haiku:
 		print "\nEvaluation is:\n" + str(bestFitness)
 
 	def grammarHaiku(self):
-		#grammar = [["NN", "NN", "-"],
-		#	   ["DT", "NN","IN","DT","NN"], 
-		# 	   ["NNS", "IN","DT","NN"]]			
-		
 		grammar = self.grammar
-		#print grammar
 		newGrammar = [[None]*len(grammar[0]),
 			      [None]*len(grammar[1]),
 		      	      [None]*len(grammar[2])] 
@@ -90,8 +84,6 @@ class Haiku:
 	
 		for line in xrange(len(grammar)):
 		
-			someLine = ""
-			
 			for index in xrange(len(grammar[line])):
 				if grammar[line][index] in string.punctuation:
 					newGrammar[line][index] = grammar[line][index]
@@ -151,8 +143,6 @@ class Haiku:
 			grammar+=line
 		
 		randIndex = int(randint(0,len(grammars)-1))
-		#while len(grammars[randIndex].splitlines()) < 1:
-			#randIndex = int(randint(0,len(grammars)))
 		
 		newGrammars = []
 			

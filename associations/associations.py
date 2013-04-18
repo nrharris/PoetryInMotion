@@ -12,7 +12,7 @@ def randomWalk(seed):
 	if cursor.fetchone()[0] == 0:
 		return walkedList
 
-	for i in xrange(8):
+	for i in xrange(3):
 		randirection = choice([1,2])
 		
 		choices = []
@@ -33,7 +33,9 @@ def randomWalk(seed):
 
 		index = randint(0,len(choices)-1)
 		seed = str(choices[index][0])
-		walkedList.append(seed)
+		
+		if seed not in walkedList:
+			walkedList.append(seed)
 	
 	return walkedList
 

@@ -21,7 +21,7 @@ def redditSub(sub):
 	from reddit.worker import Reddit
 	r = Reddit()
 	r.subredditComments(sub)
-	
+
 def unknown():
 	print "Unknown command"
 
@@ -31,7 +31,7 @@ if __name__ == "__main__":
 	
 	if len(sys.argv) > 1:
 		
-		commands = ["naive","grammar","init","reddit"]
+		commands = ["naive","grammar","init","reddit","twitter"]
 
 		if sys.argv[1].lower() == "naive":
 			naive(haiku)
@@ -54,4 +54,4 @@ if __name__ == "__main__":
 
 	else:
 		naive(haiku)	
-			
+				
