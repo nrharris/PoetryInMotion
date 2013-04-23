@@ -44,7 +44,7 @@ class DatabaseInit:
 					secondPos text, firstSyllables integer,secondSyllables integer)''')
 
 		self.cursor.execute('''CREATE TABLE WordAssociations
-					(cue text,target text,FSG float,BSG float)''')
+					(cue text,target text,FSG float,BSG float, cuePos text, tarPos text)''')
 		self.PoeticBigrams()
 		self.WordAssociationInit()
 
@@ -190,9 +190,11 @@ class DatabaseInit:
 				
 				cue = row[0].lower().strip(" ")
 				target = row[1].lower().strip(" ")
+				cuePos = row[17].strip(" ")				
+				tarPos = row[26].strip(" ")
 
-				self.cursor.execute("INSERT into WordAssociations VALUES (?,?,?,?)",
-							(cue,target,FSG,BSG,))	
+				self.cursor.execute("INSERT into WordAssociations VALUES (?,?,?,?,?,?)",
+							(cue,target,FSG,BSG,cuePos,tarPos))	
 
 	def convertPos(self,pos):
 		pos = pos.upper()

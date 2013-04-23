@@ -26,10 +26,12 @@ def randomWalk(seed):
 				return walkedList
 			if randirection == 1:
 				choices = [row for row in 
-					cursor.execute("select target from WordAssociations where cue = ? and FSG>=.02", (seed,))]
+					cursor.execute('''select target from WordAssociations 
+							where cue = ? and FSG>=.02 and cuePos = ?''', (seed,'N',))]
 			else:
 				choices = [row for row in 
-					cursor.execute("select cue from WordAssociations where target = ? and BSG>=.02", (seed,))]
+					cursor.execute('''select cue from WordAssociations 
+							where target = ? and BSG>=.02 and tarPos = ?''', (seed,'N',))]
 			
 			count+=1
 
@@ -40,5 +42,4 @@ def randomWalk(seed):
 			walkedList.append(newSeed)
 	
 	return walkedList
-
 

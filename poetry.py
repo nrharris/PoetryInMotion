@@ -53,5 +53,4 @@ if __name__ == "__main__":
 			print "Unknown command"
 
 	else:
-		naive(haiku)	
-				
+		naive(haiku)

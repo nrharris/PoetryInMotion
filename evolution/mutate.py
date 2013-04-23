@@ -1,5 +1,6 @@
 from wordMethods.sounds import SyllableCounter
 from associations.associations import randomWalk
+from associations.Seasons import Winter
 from nltk.corpus import wordnet as wn
 from random import randint
 from random import choice
@@ -40,43 +41,24 @@ class Individual:
 	def mutate(self,haiku):
 		splitHaiku = [line.split(" ") for line in [line for line in haiku.splitlines()]]				
 
-		nouns = []
-		associations = []
-
-		for i in xrange(len(self.grammar)):
-			for j in xrange(len(self.grammar[i])):
-				if "NN" in self.grammar[i][j]: 
-					walk = randomWalk(splitHaiku[i][j])
-					
-					if len(walk) != 0:
-						#associations.append((splitHaiku[i][j],randomWalk(splitHaiku[i][j])))
-						pass
-
-					nouns.append((i,j))	
-	
+		associations = Winter()
 			
-		associations.append(("shade",randomWalk("shade")))
-		associations.append(("blossom",randomWalk("blossom")))
-		associations.append(("sun",randomWalk("sun")))
-		
-		seed = associations[randint(0,len(associations)-1)]
-	
-		splitHaiku = self.replace(splitHaiku,seed)
+		splitHaiku = self.replaceNouns(splitHaiku,associations)
 
 		return "\n".join([" ".join(line) for line in [line for line in splitHaiku]])
 
-	def replace(self,splitHaiku,seed):
+	def replaceNouns(self,splitHaiku,seed):
 		connection = sqlite3.connect("data/haiku.db")
 		cursor = connection.cursor()
 
 		for i in xrange(len(splitHaiku)):
 			for j in xrange(len(splitHaiku[i])):
-				if "NN" in self.grammar[i][j] and splitHaiku[i][j] != seed[0]:
-					if len(seed[1]) == 0:
+				if "NN" in self.grammar[i][j] and splitHaiku[i][j] != seed:
+					if len(seed) == 0:
 						break
 
-					replacement = seed[1][randint(0,len(seed[1])-1)]
-					seed[1].remove(replacement)
+					replacement = seed[randint(0,len(seed[1])-1)]
+					seed.remove(replacement)
 					
 					if j != 0:
 						pre = [row for row in cursor.execute('''select firstWord from Bigrams 
@@ -98,7 +80,7 @@ class Individual:
 
 					splitHaiku[i][j] = replacement
 
-		return splitHaiku			
+		return splitHaiku		
 		
 	def fitness(self,haiku):
 		splits = [line.split(" ") for line in haiku.split("\n")]	
