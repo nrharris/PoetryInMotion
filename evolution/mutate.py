@@ -1,6 +1,6 @@
 from wordMethods.sounds import SyllableCounter
 from associations.associations import randomWalk
-from associations.Seasons import Winter
+from associations.Seasons import *
 from nltk.corpus import wordnet as wn
 from random import randint
 from random import choice
@@ -9,9 +9,11 @@ import itertools
 
 class Individual:
 	
-	def __init__(self,grammar):
+	def __init__(self,grammar,season):
 		self.syllableCounter = SyllableCounter()
 		self.grammar = grammar
+		self.season = season
+
 
 	def naiveMutate(self,haiku):
 		connection = sqlite3.connect("data/haiku.db")
@@ -40,11 +42,13 @@ class Individual:
 
 	def mutate(self,haiku):
 		splitHaiku = [line.split(" ") for line in [line for line in haiku.splitlines()]]				
-
-		associations = Winter()
+		
+		seasonList = {"summer": Summer(),"winter": Winter(),"fall": Fall(),"spring": Spring()}
+		
+		associations = seasonList[self.season]
 			
 		splitHaiku = self.replaceNouns(splitHaiku,associations)
-
+		
 		return "\n".join([" ".join(line) for line in [line for line in splitHaiku]])
 
 	def replaceNouns(self,splitHaiku,seed):
@@ -55,9 +59,10 @@ class Individual:
 			for j in xrange(len(splitHaiku[i])):
 				if "NN" in self.grammar[i][j] and splitHaiku[i][j] != seed:
 					if len(seed) == 0:
+						print "break"
 						break
-
-					replacement = seed[randint(0,len(seed[1])-1)]
+					
+					replacement = seed[randint(0,len(seed)-1)]
 					seed.remove(replacement)
 					
 					if j != 0:

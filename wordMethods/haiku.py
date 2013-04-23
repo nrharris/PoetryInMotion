@@ -1,6 +1,7 @@
 from wordMethods.sounds import SyllableCounter
 from evolution.mutate import Individual
-from random import randint
+from random import randint,choice
+from associations.Seasons import *
 import sqlite3
 import string
 
@@ -9,7 +10,8 @@ class Haiku:
 	def __init__(self):
 		self.syllableCounter = SyllableCounter()
 		self.grammar = self.setGrammar()
-			
+		self.setSeason()
+
 	def isHaiku(self,text):
 		counts = self.syllableCounter.getLineCounts(text)
 		expectedCounts = [5,7,5]
@@ -158,6 +160,13 @@ class Haiku:
 
 	def getGrammar(self):
 		return self.grammar
+	
+	def setSeason(self):
+		seasons = ["winter","fall","summer","spring"]
+		self.season = choice(seasons)
+		
+	def getSeason(self):
+		return this.season
 
 	def evolvedGrammarHaiku(self):
 	
@@ -165,23 +174,16 @@ class Haiku:
 		bestFitness = 0
 		currFitness = 0
 	
-		individual = Individual(self.grammar)
+		individual = Individual(self.grammar,self.season)
 		newHaiku = self.grammarHaiku()
 
-		for i in xrange(100):
+		for i in xrange(1000):
 			#newHaiku = self.grammarHaiku()
+			print i
 			newHaiku = individual.mutate(newHaiku)
 			currFitness = individual.fitness(newHaiku)
 		
-			'''newThing = self.tailorHaiku(newHaiku)
-			for j in xrange(100):
-				print newThing
-				print individual.fitness(newThing)
-				newThing = self.tailorHaiku(newThing)
-			return'''	
-			
 			print newHaiku
-			#print self.tailorHaiku(newHaiku)
 			print currFitness
 			print "\n"
 
