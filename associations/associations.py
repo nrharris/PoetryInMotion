@@ -1,6 +1,18 @@
 import sqlite3
-from random import randint
-from random import choice
+from random import randint,choice
+
+def connectedness(cue, target):
+	conn = sqlite3.connect("data/haiku.db")
+	cursor = conn.cursor()
+
+	connection = [row for row in cursor.execute('''select FSG,BSG from WordAssociations where 
+				(cue = ? and target = ?) or (cue = ? and target = ?)''',
+				(cue,target,target,cue))]
+	
+	if len(connection) > 0:
+		return connection[0][0] + connection[0][1]
+	else:
+		return 0
 
 def randomWalk(seed):
 	conn = sqlite3.connect("data/haiku.db")

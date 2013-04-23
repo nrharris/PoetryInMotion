@@ -177,8 +177,9 @@ class Haiku:
 		individual = Individual(self.grammar,self.season)
 		newHaiku = self.grammarHaiku()
 
-		for i in xrange(1000):
-			#newHaiku = self.grammarHaiku()
+		best = []
+
+		for i in xrange(25):
 			print i
 			newHaiku = individual.mutate(newHaiku)
 			currFitness = individual.fitness(newHaiku)
@@ -188,6 +189,7 @@ class Haiku:
 			print "\n"
 
 			if currFitness > bestFitness:
+				best.append((currFitness,newHaiku))
 				bestHaiku = newHaiku
 				bestFitness = currFitness
 		
@@ -196,21 +198,5 @@ class Haiku:
 		print bestFitness		
 		print self.grammar	
 
-	def tailorHaiku(self,haiku):
-		splitHaiku = [line.split(" ") for line in [line for line in haiku.splitlines()]]	
-		lineCounts = self.syllableCounter.getLineCounts(haiku)
-		connection = sqlite3.connect("data/haiku.db")
-		cursor = connection.cursor()
-		
-		for i in xrange(len(splitHaiku)):
-			for j in xrange(len(splitHaiku[i])):
-				if "NN" not in splitHaiku[i][j]:
-					
-					potentialWords = [row for row in 
-					cursor.execute("select firstWord from Bigrams where firstPos = ?",(self.grammar[i][j],))]
-					
-					if len(potentialWords) != 0:	
-						splitHaiku[i][j] = str(potentialWords[randint(0,len(potentialWords)-1)])
-
-							
-		return "\n".join([" ".join(line) for line in [line for line in splitHaiku]])
+		print "Best Haiku: "
+		print sorted(best)
